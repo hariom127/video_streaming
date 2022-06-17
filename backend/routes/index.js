@@ -7,7 +7,6 @@ router.get('/', function (req, res, next) {
 })
 /* GET home page. */
 router.get('/video', function (req, res, next) {
-  // res.render('index', { title: 'Express' });
   let range = req.headers.range
 
   if (!range) range = 'bytes=0-'
@@ -15,7 +14,7 @@ router.get('/video', function (req, res, next) {
   const videoSize = fs.statSync(videoPath).size
 
   const chunkSize = 1 * 1e6 //1e6 one mega
-  const start = Number(range.replace(/\D/g, ''))
+  const start = Number(range.replace(/\D/g, '')) // remove all alphanumeric characters from renge
   const end = Math.min(start + chunkSize, videoSize - 1)
   const contentLength = end - start + 1
   console.log(start, 'header')
@@ -27,7 +26,7 @@ router.get('/video', function (req, res, next) {
     'Content-Type': 'video/mp4',
   }
   console.log('=====>', header)
-  res.writeHead(206, header)
+  res.writeHead(206, header) //206 content in parts or parsal data pass
   const stream = fs.createReadStream(videoPath, { start, end })
   stream.pipe(res)
 })
